@@ -7,7 +7,19 @@
   <body>
 
     <div class="container">
+	   <div class="game-controls hide">
+      <!-- <div class="game-score hide">
+        Score:
+        <span id="score" class="game-score-wrapper">0</span>
+      </div>
+      <div class="game-button hide">
+        <span id="btnPause" class="game-button-wrapper" data-btn-action="pause">Pause</span>
+      </div>
+      <div class="game-button hide">
+       <span id="btnResume" class="game-button-wrapper" data-btn-action="reset">Resume</span>
+      </div> -->
 
+    </div>
        <div class="game-home">
 	      <div class="content">
 	        <span class="title">
@@ -16,7 +28,7 @@
 
 	        <div class="game-speed-dial">
 	          <p><em>Choose the bubble speed</em></p>
-	          <input type="text" class="dial" data-min="1" data-max="10" value="10">
+	          <input type="text" class="dial" data-min="1" data-max="10" value="5">
 	      </div>
 
 	        <div class="game-button">
@@ -25,11 +37,6 @@
 	      </div>
      	 <div class="bg-overlay"></div>
     	</div>
-    	<div class="game-canvas">
-    		<input id = "btnRestart" type="submit" value="Restart"/>
-    	    <input id = "btnPause" type="submit" value="Pause"/>
-
-    </div>
     </div>
   </body>
 

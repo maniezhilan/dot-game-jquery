@@ -1,11 +1,9 @@
-
-
-
 var explosionWords = ['Pop!', 'Snap!', 'Crack!'];
 var bubblesPopped = 0;
 var $score = document.getElementById('score');
 var $container = $('.container');
 var $speed = 10000;
+var $play = false
 
 
 function updateScore(offset) {
@@ -13,17 +11,23 @@ function updateScore(offset) {
     $score.innerHTML = 'Popped ' + bubblesPopped + ' bubbles!';
 }
 
- $('#btnPlay').click(function(e) {
-    	$('bg-overlay').fadeToggle("fast");
-    	timeline.play();
-    });
-    $('#btnPause').click(function(e) {
-    	timeline.pause();
-    });
-    $('#btnRestart').click(function(e) {
-    	timeline.play();
-    });
+ $(".dial").knob({
+        'release' : function (value) {
+        	$speed = value * 1000
+       }
 
+	});
+
+$('#btnPlay').click(function(e) {
+		$play = true;
+    	$('.content').fadeToggle("fast");
+    	$('.bg-overlay').removeClass();
+    	$('.game-controls').removeClass("hide");
+    	$('.game-score').removeClass("hide");
+    	$('.game-button').removeClass("hide")
+    	startBubbles();
+		startWaves();
+    });
 
 function createBubble() {
     // create bubble graphic
@@ -48,25 +52,30 @@ function createBubble() {
 }
 function createExplosion(x, y) {
     // create explosion at the coordinates
-    var $explosion = document.createElement('div');
-    $explosion.classList.add('explosion');
-    $explosion.style.left = x + 'px';
-    $explosion.style.top = y + 'px';
-    $explosion.innerHTML = explosionWords[Math.floor(Math.random() * 3)];
-    document.body.appendChild($explosion);
-    // animate cartoon pop on words
-    just.animate({
-        targets: $explosion,
-        to: 600,
-        fill: 'forwards',
-        easing: 'ease-out',
-        css: [
-            { scale: 1 },
-            { offset: 0.2, scale: 1.4, opacity: 1 },
-            { scale: .7, opacity: 0 }
-        ]
-    })
-        .on('finish', function () { return document.body.removeChild($explosion); });
+    if($play){
+	    var $explosion = document.createElement('div');
+	    $explosion.classList.add('explosion');
+	    $explosion.style.left = x + 'px';
+	    $explosion.style.top = y + 'px';
+	    $explosion.innerHTML = explosionWords[Math.floor(Math.random() * 3)];
+	    document.body.appendChild($explosion);
+	    // animate cartoon pop on words
+	    just.animate({
+	        targets: $explosion,
+	        to: 600,
+	        fill: 'forwards',
+	        easing: 'ease-out',
+	        css: [
+	            { scale: 1 },
+	            { offset: 0.2, scale: 1.4, opacity: 1 },
+	            { scale: .7, opacity: 0 }
+	        ]
+	    })
+	   .on('finish', function () {
+	   		console.log('$explosion',$explosion);
+	   		document.body.removeChild($explosion);
+	   });
+    }
 }
 function destroyBubble($bubble) {
     return function () {
@@ -92,12 +101,8 @@ function generateBubbles(min, max) {
 function animateBubbles() {
 
     var bubbles = generateBubbles(12, 20);
-    $(".dial").knob({
-        'release' : function (value) {
-        	$speed = value * 1000
-       }
 
-	});
+
     var endTranslateY = just.random(100, 110, 'vh', true);
     var startScale = just.random(50, 100, null, true);
     var endScale = just.random(10, 80, null, true);
@@ -119,7 +124,16 @@ function animateBubbles() {
 	    })
     });
 
-    timeline.play();
+
+
+    if($play){
+    	console.log('play');
+    	timeline.play();
+    }
+
+    $('#btnPause').click(function(e) {
+    	timeline.pause();
+    });
 
 
     return timeline;
@@ -142,6 +156,5 @@ function startWaves() {
         iterations: Infinity
     }).play();
 }
-startBubbles();
-startWaves();
+
 
