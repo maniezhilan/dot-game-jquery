@@ -1,0 +1,49 @@
+body {
+   // background-color: hsl(243, 100%, 30%);
+   background-color: hsl(196, 92.2%, 20%);
+}
+
+h2 {
+   text-align: center;
+   font-family: "Tillana", sans-serif;
+   // yes, comic sans
+   font-weight: 700;
+   font-size: 30pt;
+   color: white;
+}
+
+.bubble-wrap {
+   position: fixed;
+   bottom: -13em;
+   padding: 3em;
+}
+
+.bubble {
+   border-radius: 5em;
+   box-shadow: 1px 1px 7px hsla(0, 0, 80%, 0.7);
+   height: 8em;
+   width: 8em;
+   cursor: pointer;
+   background-image:
+      radial-gradient(ellipse at 75% 70%,
+         hsla(0, 0%, 90%, 0.8),
+         hsla(0, 0%, 90%, 0.15) 9%,
+         hsla(0, 0%, 10%, 0.1) 90%,
+         hsla(0, 0%, 10%, 0.1)
+      ),
+      radial-gradient(ellipse at 25% 30%,
+         hsla(0, 0%, 90%, 0.8),
+         hsla(0, 0%, 60%, 0.2) 7%,
+         hsla(0, 0%, 10%, 0.1) 90%,
+         hsla(0, 0%, 10%, 0.1)
+      );
+}
+
+.explosion {
+   color: white;
+   position: fixed;
+   transform-origin: center;
+   font-family: "Tillana", sans-serif;
+   font-weight: 700;
+   font-size: 20pt;
+}
