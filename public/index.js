@@ -32,8 +32,12 @@ var scorecard = document.getElementById("scorecard");
 var points = document.getElementById("#score");
 var template = scorecard.innerHTML;
 
-function updateScore(){
-	score.increment();
+function updateScore(value){
+	console.log('val',value);
+	for(var i=0; i < value;i++){
+		score.increment();
+	}
+
 	updateCard();
 };
 function updateCard(){
@@ -115,7 +119,9 @@ function destroyBubble($bubble) {
 		        var centerX = (rect.right - rect.left) * .45 + rect.left;
 		        var centerY = (rect.bottom - rect.top) * .45 + rect.top;
 		        createExplosion(centerX, centerY);
-		        updateScore(1);
+
+		        var score = Math.ceil(Math.abs(1/rect.width*100));
+		        updateScore(score);
 		        // remove bubble
 		        $bubble.style.display = 'none';
 	    	}

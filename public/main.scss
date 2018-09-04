@@ -194,9 +194,13 @@ h2 {
 	      width: 100%;
 	    }
 
-
-
-
+.game-canvas {
+    height: 100vh;
+    overflow: hidden;
+    width: 100vw;
+    background-size: cover;
+    background-repeat: repeat-y;
+  }
 
 }
 
