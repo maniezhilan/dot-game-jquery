@@ -2,29 +2,60 @@ var explosionWords = ['Pop!', 'Snap!', 'Crack!'];
 var bubblesPopped = 0;
 var $score = document.getElementById('score');
 var $container = $('.container');
-var $speed = 10000;
-var $play = false
+var $speed = 5000;
+var $play = false;
 
+function getSpeed(key){
+	var speedMap = {1:10000,
+					2:9000,
+					3:8000,
+					4:7000,
+					5:6000,
+					6:5000,
+					7:4000,
+					8:3000,
+					9:2000,
+					10:1000};
+	return speedMap[key];
 
-function updateScore(offset) {
-    bubblesPopped += offset;
-    $score.innerHTML = 'Popped ' + bubblesPopped + ' bubbles!';
 }
-
- $(".dial").knob({
+$(".dial").knob({
         'release' : function (value) {
-        	$speed = value * 1000
+        	$speed = getSpeed(value);
        }
 
 	});
 
+// setup
+var score = new Score();
+var scorecard = document.getElementById("scorecard");
+var points = document.getElementById("#score");
+var template = scorecard.innerHTML;
+
+function updateScore(){
+	score.increment();
+	updateCard();
+};
+function updateCard(){
+	var s = template;
+	// Get scorecard
+	var d = score.scorecard();
+	// populate template
+	for(var p in d){
+		s=s.replace(new RegExp('{'+p+'}','g'), d[p]);
+	}
+	scorecard.innerHTML = s;
+	scorecard.className = d.status;
+	document.getElementById("score").innerHTML = 'score: '+d.score;
+	//document.getElementById("icon").className = 'icons8-' + d.status;
+};
+updateCard();
+
+
 $('#btnPlay').click(function(e) {
 		$play = true;
-    	$('.content').fadeToggle("fast");
-    	$('.bg-overlay').removeClass();
-    	$('.game-controls').removeClass("hide");
-    	$('.game-score').removeClass("hide");
-    	$('.game-button').removeClass("hide")
+    	$('.bg-overlay').addClass('hide');
+    	$container.find('.content').css("display","none");
     	startBubbles();
 		startWaves();
     });
@@ -33,7 +64,7 @@ function createBubble() {
     // create bubble graphic
     var $bubble = document.createElement('div');
     $bubble.classList.add('bubble');
-    const start = 10;
+    const start = 50;
 	const end = 100;
 	const unit = undefined;
 	const onlyWholeNumbers = true;
@@ -52,7 +83,6 @@ function createBubble() {
 }
 function createExplosion(x, y) {
     // create explosion at the coordinates
-    if($play){
 	    var $explosion = document.createElement('div');
 	    $explosion.classList.add('explosion');
 	    $explosion.style.left = x + 'px';
@@ -60,34 +90,34 @@ function createExplosion(x, y) {
 	    $explosion.innerHTML = explosionWords[Math.floor(Math.random() * 3)];
 	    document.body.appendChild($explosion);
 	    // animate cartoon pop on words
-	    just.animate({
+	    var timeline = just.animate({
 	        targets: $explosion,
-	        to: 600,
+	        duration: 600,
 	        fill: 'forwards',
 	        easing: 'ease-out',
-	        css: [
+	        web: [
 	            { scale: 1 },
 	            { offset: 0.2, scale: 1.4, opacity: 1 },
 	            { scale: .7, opacity: 0 }
 	        ]
 	    })
 	   .on('finish', function () {
-	   		console.log('$explosion',$explosion);
 	   		document.body.removeChild($explosion);
 	   });
-    }
+	   timeline.play();
 }
 function destroyBubble($bubble) {
     return function () {
-
-	        // create explosion at bubbles old position
-	        var rect = $bubble.getBoundingClientRect();
-	        var centerX = (rect.right - rect.left) * .45 + rect.left;
-	        var centerY = (rect.bottom - rect.top) * .45 + rect.top;
-	        createExplosion(centerX, centerY);
-	        updateScore(1);
-	        // remove bubble
-	        $bubble.style.display = 'none';
+    		if($play){
+		        // create explosion at bubbles old position
+		        var rect = $bubble.getBoundingClientRect();
+		        var centerX = (rect.right - rect.left) * .45 + rect.left;
+		        var centerY = (rect.bottom - rect.top) * .45 + rect.top;
+		        createExplosion(centerX, centerY);
+		        updateScore(1);
+		        // remove bubble
+		        $bubble.style.display = 'none';
+	    	}
     };
 }
 function generateBubbles(min, max) {
@@ -108,7 +138,7 @@ function animateBubbles() {
     var endScale = just.random(10, 80, null, true);
     const timeline = just.animate({
 	    targets: bubbles,
-	    duration: 5000,
+	    duration: $speed,
 	    easing: 'ease-in',
 	    web: {
          	transform: [
@@ -125,16 +155,40 @@ function animateBubbles() {
     });
 
 
+    $('#btnResume').click(function(e) {
+    	$play = true;
+    	$('.bg-overlay').addClass('hide');
+    	$container.find('.content').css("display","none");
+    	$('#btnResumeWrapper').css("display","none");
+    	$('#btnPause').text('pause');
+    	timeline.play();
+    });
 
     if($play){
-    	console.log('play');
     	timeline.play();
     }
 
+
     $('#btnPause').click(function(e) {
-    	timeline.pause();
+    	$(this).text(function(i, text){
+    	  if(text === "pause"){
+    	  	timeline.pause();
+    	  	$play = false;
+    	  	$('.bg-overlay').removeClass('hide').hover(function() {
+    	  		 $(this).find('.game-button').css("display","block");
+    	  	});
+
+    	  }	else{
+    	  	timeline.play();
+    	  	$play = true;
+    	  }
+          return text === "pause" ? "resume" : "pause";
+        })
     });
 
+    $('#btnReset').click(function() {
+    	location.reload();
+	});
 
     return timeline;
 }
@@ -156,5 +210,3 @@ function startWaves() {
         iterations: Infinity
     }).play();
 }
-
-
