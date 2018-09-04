@@ -171,7 +171,7 @@ function animateBubbles() {
     $('#btnPause').click(function(e) {
     	$(this).text(function(i, text){
     	  if(text === "pause"){
-    	  	timeline.pause();
+
     	  	$play = false;
     	  	$('.bg-overlay').removeClass('hide').hover(function() {
     	  		 $(this).find('.game-button').css("display","block");
@@ -180,6 +180,7 @@ function animateBubbles() {
           return text === "pause" ? "resume" : "pause";
       	}
       });
+    	timeline.pause();
     });
 
     $('#btnReset').click(function() {
