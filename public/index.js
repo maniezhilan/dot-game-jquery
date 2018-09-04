@@ -56,6 +56,7 @@ $('#btnPlay').click(function(e) {
 		$play = true;
     	$('.bg-overlay').addClass('hide');
     	$container.find('.content').css("display","none");
+    	$container.find('.game-controls').css("visibility","visible");
     	startBubbles();
 		startWaves();
     });
@@ -74,7 +75,7 @@ function createBubble() {
     // wrap in a larger div so bubbles are easy to pop while moving
     var $boundingBox = document.createElement('div');
     $boundingBox.classList.add('bubble-wrap');
-    $boundingBox.style.left = (5 + (Math.random() * 90)) + 'vw';
+    $boundingBox.style.left = (Math.random() * 90) + 'vw';
     $boundingBox.appendChild($bubble);
     $boundingBox.addEventListener('click', destroyBubble($boundingBox));
     // attach to doc and return
@@ -164,9 +165,7 @@ function animateBubbles() {
     	timeline.play();
     });
 
-    if($play){
-    	timeline.play();
-    }
+
 
 
     $('#btnPause').click(function(e) {
@@ -178,17 +177,18 @@ function animateBubbles() {
     	  		 $(this).find('.game-button').css("display","block");
     	  	});
 
-    	  }	else{
-    	  	timeline.play();
-    	  	$play = true;
-    	  }
           return text === "pause" ? "resume" : "pause";
-        })
+      	}
+      });
     });
 
     $('#btnReset').click(function() {
     	location.reload();
 	});
+
+	if($play){
+    	timeline.play();
+    }
 
     return timeline;
 }
